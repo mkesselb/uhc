@@ -15,6 +15,14 @@ public class Building extends Structure{
 		return this.floors;
 	}
 	
+	public Floor getFloor(int index){
+		return this.floors.get(index);
+	}
+	
+	public void addFloor(Floor f){
+		this.floors.add(f);
+	}
+	
 	public void nextModelStep(){
 		
 		//TODO: get heating target from special building plan

@@ -15,6 +15,10 @@ public class Floor extends Structure{
 		return this.rooms;
 	}
 	
+	public void addRoom(Room r){
+		this.rooms.add(r);
+	}
+	
 	public int getRoomNumberWindows(boolean isOpen){
 		int ow = 0;
 		

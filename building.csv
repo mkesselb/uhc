@@ -1,0 +1,13 @@
+b,Haus Klaus
+f,Keller
+r,Wäsche,2
+r,Schrank,1
+f,Erdgeschoss
+r,Küche,4
+r,Wohnzimmer,3
+r,Vorzimmer,1
+r,Abstellkammer,0
+f,Erster Stock
+r,Schlafzimmer Eltern,2
+r,Schlafzimmer Kinder,3
+r,Musikzimmer,1
