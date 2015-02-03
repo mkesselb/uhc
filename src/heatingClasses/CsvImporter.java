@@ -26,7 +26,7 @@ public class CsvImporter {
 				if(line.startsWith("f")){
 					//parse floor
 					Floor f = new Floor(p[1], new ArrayList<Room>());
-					bd.addFloor(f);
+					bd.addSubStruct(f);
 				}
 				if(line.startsWith("r")){
 					//parse room
@@ -36,7 +36,9 @@ public class CsvImporter {
 						ws.add(w);
 					}
 					Room r = new Room(p[1], ws);
-					bd.getFloor(bd.getFloors().size()-1).addRoom(r);
+					
+					Floor f = (Floor) bd.getSubStruct(bd.getSubStructs().size()-1);
+					f.addSubStruct(r);
 				}
 			}
 		} catch (IOException e) {

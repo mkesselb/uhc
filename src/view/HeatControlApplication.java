@@ -1,10 +1,13 @@
 package view;
 
+import heatingClasses.HeatingTreeModel;
+
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
-import javax.swing.JScrollPane;
 import java.awt.BorderLayout;
+import java.io.File;
+
 import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JPanel;
@@ -16,114 +19,205 @@ import javax.swing.JTable;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.JButton;
 import javax.swing.JSlider;
+import javax.swing.WindowConstants;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.BoxLayout;
 
 public class HeatControlApplication extends JFrame{
 	public HeatControlApplication() {
 		
-		JSplitPane splitPane = new JSplitPane();
-		getContentPane().add(splitPane, BorderLayout.CENTER);
+		JPanel panel = new JPanel();
+		
+		JPanel panel_1 = new JPanel();
+		GroupLayout groupLayout = new GroupLayout(getContentPane());
+		groupLayout.setHorizontalGroup(
+			groupLayout.createParallelGroup(Alignment.LEADING)
+				.addGroup(groupLayout.createSequentialGroup()
+					.addContainerGap()
+					.addComponent(panel, GroupLayout.PREFERRED_SIZE, 219, GroupLayout.PREFERRED_SIZE)
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(panel_1, GroupLayout.DEFAULT_SIZE, 482, Short.MAX_VALUE)
+					.addContainerGap())
+		);
+		groupLayout.setVerticalGroup(
+			groupLayout.createParallelGroup(Alignment.LEADING)
+				.addGroup(Alignment.TRAILING, groupLayout.createSequentialGroup()
+					.addContainerGap()
+					.addGroup(groupLayout.createParallelGroup(Alignment.TRAILING)
+						.addComponent(panel_1, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 422, Short.MAX_VALUE)
+						.addComponent(panel, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 422, Short.MAX_VALUE))
+					.addContainerGap())
+		);
 		
 		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
-		splitPane.setRightComponent(tabbedPane);
 		
 		JPanel overviewPanel = new JPanel();
 		tabbedPane.addTab("Overview", null, overviewPanel, null);
 		
-		JLabel informationLabel = new JLabel("New label");
+		JLabel overviewInfoLabel = new JLabel("Information about the selected structure");
 		
-		JPanel panel = new JPanel();
+		JPanel panel_2 = new JPanel();
 		GroupLayout gl_overviewPanel = new GroupLayout(overviewPanel);
 		gl_overviewPanel.setHorizontalGroup(
 			gl_overviewPanel.createParallelGroup(Alignment.LEADING)
 				.addGroup(gl_overviewPanel.createSequentialGroup()
 					.addContainerGap()
 					.addGroup(gl_overviewPanel.createParallelGroup(Alignment.LEADING)
-						.addComponent(informationLabel)
-						.addComponent(panel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-					.addContainerGap(516, Short.MAX_VALUE))
+						.addComponent(panel_2, GroupLayout.DEFAULT_SIZE, 457, Short.MAX_VALUE)
+						.addComponent(overviewInfoLabel))
+					.addContainerGap())
 		);
 		gl_overviewPanel.setVerticalGroup(
 			gl_overviewPanel.createParallelGroup(Alignment.LEADING)
 				.addGroup(gl_overviewPanel.createSequentialGroup()
-					.addGap(31)
-					.addComponent(informationLabel)
-					.addPreferredGap(ComponentPlacement.RELATED)
-					.addComponent(panel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-					.addContainerGap(361, Short.MAX_VALUE))
+					.addContainerGap()
+					.addComponent(overviewInfoLabel)
+					.addPreferredGap(ComponentPlacement.UNRELATED)
+					.addComponent(panel_2, GroupLayout.DEFAULT_SIZE, 347, Short.MAX_VALUE)
+					.addContainerGap())
 		);
-		
-		floorTable = new JTable();
-		panel.add(floorTable);
 		
 		buildingTable = new JTable();
-		panel.add(buildingTable);
+		panel_2.add(buildingTable);
+		
+		floorTable = new JTable();
+		panel_2.add(floorTable);
 		
 		roomTable = new JTable();
-		panel.add(roomTable);
+		panel_2.add(roomTable);
 		overviewPanel.setLayout(gl_overviewPanel);
 		
-		JPanel heatPanel = new JPanel();
-		tabbedPane.addTab("Heating Control", null, heatPanel, null);
+		JPanel heatingPanel = new JPanel();
+		tabbedPane.addTab("Heating plan", null, heatingPanel, null);
 		
-		JPanel panel_1 = new JPanel();
+		JLabel heatingInfoLabel = new JLabel("Information about the selected structure");
 		
-		JPanel panel_2 = new JPanel();
-		GroupLayout gl_heatPanel = new GroupLayout(heatPanel);
-		gl_heatPanel.setHorizontalGroup(
-			gl_heatPanel.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_heatPanel.createSequentialGroup()
-					.addGap(19)
-					.addGroup(gl_heatPanel.createParallelGroup(Alignment.LEADING)
-						.addComponent(panel_2, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-						.addComponent(panel_1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-					.addContainerGap(10, Short.MAX_VALUE))
+		JPanel panel_3 = new JPanel();
+		
+		JPanel panel_4 = new JPanel();
+		GroupLayout gl_heatingPanel = new GroupLayout(heatingPanel);
+		gl_heatingPanel.setHorizontalGroup(
+			gl_heatingPanel.createParallelGroup(Alignment.LEADING)
+				.addGroup(Alignment.TRAILING, gl_heatingPanel.createSequentialGroup()
+					.addContainerGap()
+					.addGroup(gl_heatingPanel.createParallelGroup(Alignment.TRAILING)
+						.addComponent(panel_4, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 457, Short.MAX_VALUE)
+						.addComponent(panel_3, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 457, Short.MAX_VALUE)
+						.addComponent(heatingInfoLabel, Alignment.LEADING))
+					.addContainerGap())
 		);
-		gl_heatPanel.setVerticalGroup(
-			gl_heatPanel.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_heatPanel.createSequentialGroup()
-					.addGap(40)
-					.addComponent(panel_2, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-					.addGap(28)
-					.addComponent(panel_1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-					.addContainerGap(311, Short.MAX_VALUE))
+		gl_heatingPanel.setVerticalGroup(
+			gl_heatingPanel.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_heatingPanel.createSequentialGroup()
+					.addContainerGap()
+					.addComponent(heatingInfoLabel)
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(panel_3, GroupLayout.PREFERRED_SIZE, 266, GroupLayout.PREFERRED_SIZE)
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(panel_4, GroupLayout.DEFAULT_SIZE, 80, Short.MAX_VALUE)
+					.addContainerGap())
 		);
 		
-		JLabel heatInfoLabel = new JLabel("New label");
-		panel_2.add(heatInfoLabel);
-		
-		heatTable = new JTable();
-		panel_2.add(heatTable);
-		
-		JButton suboptButton = new JButton("New button");
-		panel_1.add(suboptButton);
-		
-		JButton defaultTempButton = new JButton("New button");
-		panel_1.add(defaultTempButton);
-		
-		JButton heatControlButton = new JButton("New button");
-		panel_1.add(heatControlButton);
-		
-		JLabel defaultTempLabel = new JLabel("New label");
-		panel_1.add(defaultTempLabel);
+		JLabel defaultTempLabel = new JLabel("Default temperature:");
 		
 		JSlider defaultTempSlider = new JSlider();
-		panel_1.add(defaultTempSlider);
-		heatPanel.setLayout(gl_heatPanel);
 		
-		JTree tree = new JTree();
-		splitPane.setLeftComponent(tree);
+		JButton defaultTempButton = new JButton("Apply default heating");
+		
+		JButton heatingPlanButton = new JButton("Program heating plan");
+		
+		JButton suboptButton = new JButton("Check for suboptimal heating");
+		GroupLayout gl_panel_4 = new GroupLayout(panel_4);
+		gl_panel_4.setHorizontalGroup(
+			gl_panel_4.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_panel_4.createSequentialGroup()
+					.addContainerGap()
+					.addGroup(gl_panel_4.createParallelGroup(Alignment.LEADING)
+						.addComponent(defaultTempLabel)
+						.addComponent(defaultTempSlider, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+						.addGroup(gl_panel_4.createSequentialGroup()
+							.addComponent(defaultTempButton)
+							.addPreferredGap(ComponentPlacement.RELATED, 153, Short.MAX_VALUE)
+							.addComponent(suboptButton)
+							.addGap(18)
+							.addComponent(heatingPlanButton)))
+					.addContainerGap())
+		);
+		gl_panel_4.setVerticalGroup(
+			gl_panel_4.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_panel_4.createSequentialGroup()
+					.addContainerGap()
+					.addComponent(defaultTempLabel)
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(defaultTempSlider, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+					.addPreferredGap(ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+					.addGroup(gl_panel_4.createParallelGroup(Alignment.BASELINE)
+						.addComponent(defaultTempButton)
+						.addComponent(heatingPlanButton)
+						.addComponent(suboptButton)))
+		);
+		panel_4.setLayout(gl_panel_4);
+		
+		heatingTable = new JTable();
+		GroupLayout gl_panel_3 = new GroupLayout(panel_3);
+		gl_panel_3.setHorizontalGroup(
+			gl_panel_3.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_panel_3.createSequentialGroup()
+					.addContainerGap()
+					.addComponent(heatingTable, GroupLayout.PREFERRED_SIZE, 1, GroupLayout.PREFERRED_SIZE)
+					.addContainerGap(446, Short.MAX_VALUE))
+		);
+		gl_panel_3.setVerticalGroup(
+			gl_panel_3.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_panel_3.createSequentialGroup()
+					.addContainerGap()
+					.addComponent(heatingTable, GroupLayout.PREFERRED_SIZE, 1, GroupLayout.PREFERRED_SIZE)
+					.addContainerGap(254, Short.MAX_VALUE))
+		);
+		panel_3.setLayout(gl_panel_3);
+		heatingPanel.setLayout(gl_heatingPanel);
+		GroupLayout gl_panel_1 = new GroupLayout(panel_1);
+		gl_panel_1.setHorizontalGroup(
+			gl_panel_1.createParallelGroup(Alignment.LEADING)
+				.addComponent(tabbedPane, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 482, Short.MAX_VALUE)
+		);
+		gl_panel_1.setVerticalGroup(
+			gl_panel_1.createParallelGroup(Alignment.LEADING)
+				.addComponent(tabbedPane, GroupLayout.DEFAULT_SIZE, 422, Short.MAX_VALUE)
+		);
+		panel_1.setLayout(gl_panel_1);
+		
+		JTree tree = new JTree(new HeatingTreeModel("building.csv"));
+		GroupLayout gl_panel = new GroupLayout(panel);
+		gl_panel.setHorizontalGroup(
+			gl_panel.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_panel.createSequentialGroup()
+					.addContainerGap()
+					.addComponent(tree, GroupLayout.DEFAULT_SIZE, 199, Short.MAX_VALUE)
+					.addContainerGap())
+		);
+		gl_panel.setVerticalGroup(
+			gl_panel.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_panel.createSequentialGroup()
+					.addContainerGap()
+					.addComponent(tree, GroupLayout.DEFAULT_SIZE, 403, Short.MAX_VALUE)
+					.addContainerGap())
+		);
+		panel.setLayout(gl_panel);
+		getContentPane().setLayout(groupLayout);
+		
+		//TODO: listener for tree model selection
 	}
 	
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private JTable floorTable;
 	private JTable buildingTable;
+	private JTable floorTable;
 	private JTable roomTable;
-	private JTable heatTable;
+	private JTable heatingTable;
 
 	/**
 	 * Launch the application.
@@ -133,7 +227,10 @@ public class HeatControlApplication extends JFrame{
 			public void run() {
 				try {
 					HeatControlApplication frame = new HeatControlApplication();
+					frame.setTitle("Heating control");
 					frame.setVisible(true);
+					frame.setBounds(100, 100, 1000, 600);
+					frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}

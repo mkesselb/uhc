@@ -4,25 +4,20 @@ import java.util.List;
 
 public class Room extends Structure{
 
-	//needs windows and temp-sensor
-	private List<Window> windows;
-	
+	//needs temp-sensor
 	private TemperatureSensor tempSensor;
 	
 	public Room(String name, List<Window> windows){
 		super(name);
-		this.windows = windows;
+		this.subStructs = (List<Structure>)(List<?>) windows;
 		this.tempSensor = new TemperatureSensor();
-	}
-	
-	public List<Window> getWindows(){
-		return this.windows;
 	}
 	
 	public int getNumberWindows(boolean isOpen){
 		int ow = 0;
 		
-		for(Window w : this.windows){
+		for(Structure s : this.subStructs){
+			Window w = (Window) s;
 			if(w.isOpen() == isOpen){
 				ow++;
 			}

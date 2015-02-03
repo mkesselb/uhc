@@ -4,23 +4,9 @@ import java.util.List;
 
 public class Building extends Structure{
 	
-	private List<Floor> floors;
-	
 	public Building(String name, List<Floor> floors){
 		super(name);
-		this.floors = floors;
-	}
-
-	public List<Floor> getFloors(){
-		return this.floors;
-	}
-	
-	public Floor getFloor(int index){
-		return this.floors.get(index);
-	}
-	
-	public void addFloor(Floor f){
-		this.floors.add(f);
+		this.subStructs = (List<Structure>)(List<?>) floors;
 	}
 	
 	public void nextModelStep(){
@@ -28,7 +14,8 @@ public class Building extends Structure{
 		//TODO: get heating target from special building plan
 		//maybe heating plan as two-dim array for days (7days future) and 8blocks (per 3h)
 		double heatingTarget = 22;
-		for(Floor f : this.floors){
+		for(Structure s : this.subStructs){
+			Floor f = (Floor) s;
 			f.computeNextTemperature(heatingTarget);
 		}
 	}
