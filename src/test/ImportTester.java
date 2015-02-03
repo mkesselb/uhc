@@ -6,8 +6,7 @@ import heatingClasses.CsvImporter;
 public class ImportTester {
 
 	public static void main(String[] args){
-		Building b = CsvImporter.parseFromCSV("C:\\Users\\Max\\git\\uhc\\building.csv");
+		Building b = CsvImporter.parseFromCSV("building.csv");
 		System.out.println(b);
-		
 	}
 }

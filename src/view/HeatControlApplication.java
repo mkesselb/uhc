@@ -1,14 +1,18 @@
 package view;
 
+import heatingClasses.Building;
+import heatingClasses.Floor;
 import heatingClasses.HeatingTreeModel;
+import heatingClasses.Room;
+import heatingClasses.Structure;
 
 import java.awt.EventQueue;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JFrame;
-import java.awt.BorderLayout;
-import java.io.File;
-
-import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JPanel;
 import javax.swing.JTree;
@@ -20,11 +24,41 @@ import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.JButton;
 import javax.swing.JSlider;
 import javax.swing.WindowConstants;
-import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.BoxLayout;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.event.TreeSelectionListener;
+import javax.swing.tree.TreeSelectionModel;
 
 public class HeatControlApplication extends JFrame{
+	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	
+	private JTree tree;
+	
+	private JLabel overviewInfoLabel;
+	private JLabel heatingInfoLabel;
+	private JLabel defaultTempLabel;
+
+	private JTable buildingTable;
+	private JTable floorTable;
+	private JTable roomTable;
+	private JTable heatingTable;
+
+	private JPanel heatingPanel;
+	private JPanel overviewPanel;
+
+	private JSlider defaultTempSlider;
+
+	private JButton defaultTempButton;
+	private JButton heatingPlanButton;
+	private JButton suboptButton;
+
+	private JTabbedPane tabbedPane;
+	
 	public HeatControlApplication() {
 		
 		JPanel panel = new JPanel();
@@ -50,12 +84,12 @@ public class HeatControlApplication extends JFrame{
 					.addContainerGap())
 		);
 		
-		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
+		tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 		
-		JPanel overviewPanel = new JPanel();
+		overviewPanel = new JPanel();
 		tabbedPane.addTab("Overview", null, overviewPanel, null);
 		
-		JLabel overviewInfoLabel = new JLabel("Information about the selected structure");
+		overviewInfoLabel = new JLabel("Information about the selected structure");
 		
 		JPanel panel_2 = new JPanel();
 		GroupLayout gl_overviewPanel = new GroupLayout(overviewPanel);
@@ -88,10 +122,10 @@ public class HeatControlApplication extends JFrame{
 		panel_2.add(roomTable);
 		overviewPanel.setLayout(gl_overviewPanel);
 		
-		JPanel heatingPanel = new JPanel();
+		heatingPanel = new JPanel();
 		tabbedPane.addTab("Heating plan", null, heatingPanel, null);
 		
-		JLabel heatingInfoLabel = new JLabel("Information about the selected structure");
+		heatingInfoLabel = new JLabel("Information about the selected structure");
 		
 		JPanel panel_3 = new JPanel();
 		
@@ -119,15 +153,26 @@ public class HeatControlApplication extends JFrame{
 					.addContainerGap())
 		);
 		
-		JLabel defaultTempLabel = new JLabel("Default temperature:");
+		int minTemp = 0;
+		int maxTemp = 40;
+		int initTemp = 22;
+		defaultTempSlider = new JSlider(JSlider.HORIZONTAL, minTemp, maxTemp, initTemp);
+		defaultTempSlider.addChangeListener(new DefaultTempChangeListener());
+		defaultTempSlider.setMajorTickSpacing(10);
+		defaultTempSlider.setMinorTickSpacing(2);
+		defaultTempSlider.setPaintTicks(true);
+		defaultTempSlider.setPaintLabels(true);
 		
-		JSlider defaultTempSlider = new JSlider();
+		defaultTempLabel = new JLabel("Default temperature: " + initTemp);
 		
-		JButton defaultTempButton = new JButton("Apply default heating");
+		defaultTempButton = new JButton("Apply default heating");
+		defaultTempButton.addActionListener(new DefaultHeatListener());
 		
-		JButton heatingPlanButton = new JButton("Program heating plan");
+		heatingPlanButton = new JButton("Program heating plan");
+		heatingPlanButton.addActionListener(new ProgramHeatingPlanListener());
 		
-		JButton suboptButton = new JButton("Check for suboptimal heating");
+		suboptButton = new JButton("Check for suboptimal heating");
+		suboptButton.addActionListener(new SuboptimalCheckListener());
 		GroupLayout gl_panel_4 = new GroupLayout(panel_4);
 		gl_panel_4.setHorizontalGroup(
 			gl_panel_4.createParallelGroup(Alignment.LEADING)
@@ -188,7 +233,9 @@ public class HeatControlApplication extends JFrame{
 		);
 		panel_1.setLayout(gl_panel_1);
 		
-		JTree tree = new JTree(new HeatingTreeModel("building.csv"));
+		tree = new JTree(new HeatingTreeModel("building.csv"));
+		tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
+		tree.addTreeSelectionListener(new HeatTreeSelectionListener());
 		GroupLayout gl_panel = new GroupLayout(panel);
 		gl_panel.setHorizontalGroup(
 			gl_panel.createParallelGroup(Alignment.LEADING)
@@ -206,18 +253,7 @@ public class HeatControlApplication extends JFrame{
 		);
 		panel.setLayout(gl_panel);
 		getContentPane().setLayout(groupLayout);
-		
-		//TODO: listener for tree model selection
 	}
-	
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-	private JTable buildingTable;
-	private JTable floorTable;
-	private JTable roomTable;
-	private JTable heatingTable;
 
 	/**
 	 * Launch the application.
@@ -236,5 +272,81 @@ public class HeatControlApplication extends JFrame{
 				}
 			}
 		});
+	}
+	
+	private class HeatTreeSelectionListener implements TreeSelectionListener{
+		@Override
+		public void valueChanged(TreeSelectionEvent arg0) {
+			Structure struct = (Structure) tree.getLastSelectedPathComponent();
+			overviewInfoLabel.setText("Selected structure: " 
+					+ struct.getClass().getSimpleName() + "-" + struct.toString());
+			heatingInfoLabel.setText("Selected structure: " 
+					+ struct.getClass().getSimpleName() + "-" + struct.toString());
+			
+			tabbedPane.setSelectedComponent(overviewPanel);
+			
+			//TODO: fill and show the appropriate tables
+			// for overview and heating tab
+			if(struct instanceof Building){
+				floorTable.setEnabled(false);
+				roomTable.setEnabled(false);
+				buildingTable.setEnabled(true);
+				
+			}
+			if(struct instanceof Floor){
+				roomTable.setEnabled(false);
+				buildingTable.setEnabled(false);
+				floorTable.setEnabled(true);
+				
+			}
+			if(struct instanceof Room){
+				floorTable.setEnabled(false);
+				buildingTable.setEnabled(false);
+				roomTable.setEnabled(true);
+				
+			}
+		}
+	}
+	
+	private class DefaultHeatListener implements ActionListener{
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			//currently selected struct
+			Structure struct = (Structure) tree.getLastSelectedPathComponent();
+			if(struct != null){
+				int temp = defaultTempSlider.getValue();
+				
+				List<String> conflicts = struct.getDefaultHeatingConflicts();
+				if(conflicts.size() > 0){
+					//TODO: show conflict popup (maybe should be a JDialog)
+					//something like ...set visible of dialog
+					//then after that dialog.getConflicts -> (needs this method to retrieve the purged conflicts)
+				} else{
+					struct.applyDefaultHeatingModel(temp, new ArrayList<String>());
+					//TODO: update heat table from structure models
+				}
+			}
+		}
+	}
+	
+	private class SuboptimalCheckListener implements ActionListener{
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			//TODO: check for suboptimal heating
+		}
+	}
+	
+	private class ProgramHeatingPlanListener implements ActionListener{
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			//TODO: program heating popup
+		}
+	}
+	
+	private class DefaultTempChangeListener implements ChangeListener{
+		@Override
+		public void stateChanged(ChangeEvent arg0) {
+			defaultTempLabel.setText("Default temperature: " + defaultTempSlider.getValue());
+		}
 	}
 }
