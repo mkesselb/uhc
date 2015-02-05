@@ -320,7 +320,9 @@ public class HeatControlApplication extends JFrame{
 				if(conflicts.size() > 0){
 					//TODO: show conflict popup (maybe should be a JDialog)
 					//something like ...set visible of dialog
-					//then after that dialog.getConflicts -> (needs this method to retrieve the purged conflicts)
+					// -- in the dialog, the list shall be shown, and
+					//then after that: dialog.getConflicts -> (needs this method to retrieve the 
+					//	conflicts that shall be overridden)
 				} else{
 					struct.applyDefaultHeatingModel(temp, new ArrayList<String>());
 					//TODO: update heat table from structure models

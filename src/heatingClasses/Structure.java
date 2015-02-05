@@ -103,4 +103,8 @@ public abstract class Structure {
 			}
 		}
 	}
+	
+	public int[][] getHeatingPlan(){
+		return this.heatingPlan;
+	}
 }
