@@ -27,12 +27,32 @@ public class Room extends Structure{
 	}
 	
 	public double getCurrentTemperature(){
-		return this.tempSensor.getCurrentTemperature();
+		return Math.round(this.tempSensor.getCurrentTemperature());
 	}
 	
 	public void computeNextTemperature(double heatingTarget){
 		//TODO: get heating target from special room plan
 		this.tempSensor.computeNextTemperature((double)this.getNumberWindows(true) / this.getNumberWindows(false), 
 				heatingTarget);
+	}
+	
+	public String[] getOverviewColumnNames(){
+		String[] columnNames = new String[] {"window", "status"};
+		return columnNames;
+	}
+	
+	public Object[][] getOverviewTableContent(){
+		Object[][] tableContent = new Object[this.subStructs.size()][2];
+		
+		for (int i = 0; i < this.subStructs.size(); i++){
+			tableContent[i][0]= this.subStructs.get(i).getName();
+			if(((Window) this.subStructs.get(i)).isOpen()){
+				tableContent[i][1] = "open";
+			} else {
+				tableContent[i][1] = "closed";
+			}
+		}
+		
+		return tableContent;
 	}
 }

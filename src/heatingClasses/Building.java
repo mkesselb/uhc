@@ -19,4 +19,20 @@ public class Building extends Structure{
 			f.computeNextTemperature(heatingTarget);
 		}
 	}
+
+	public String[] getOverviewColumnNames(){
+		String[] columnNames = new String[] {"floor", "window status"};
+		return columnNames;
+	}
+	
+	public Object[][] getOverviewTableContent(){
+		Object[][] tableContent = new Object[this.subStructs.size()][2];
+		
+		for (int i = 0; i < this.subStructs.size(); i++){
+			tableContent[i][0]= this.subStructs.get(i).toString();	
+			tableContent[i][1] = ((Floor) this.subStructs.get(i)).getRoomNumberWindows(true)+"/"+(((Floor) this.subStructs.get(i)).getRoomNumberWindows(true)+((Floor) this.subStructs.get(i)).getRoomNumberWindows(false));
+		}
+		
+		return tableContent;
+	}
 }

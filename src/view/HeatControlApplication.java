@@ -6,6 +6,7 @@ import heatingClasses.HeatingTreeModel;
 import heatingClasses.Room;
 import heatingClasses.Structure;
 
+import java.awt.Component;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -30,6 +31,8 @@ import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.TreeSelectionModel;
 
+import java.awt.CardLayout;
+
 public class HeatControlApplication extends JFrame{
 	
 	/**
@@ -50,6 +53,10 @@ public class HeatControlApplication extends JFrame{
 
 	private JPanel heatingPanel;
 	private JPanel overviewPanel;
+	
+	private JPanel panel_2;
+	private CardLayout cl;
+	private JPanel panel_3;
 
 	private JSlider defaultTempSlider;
 
@@ -91,7 +98,7 @@ public class HeatControlApplication extends JFrame{
 		
 		overviewInfoLabel = new JLabel("Information about the selected structure");
 		
-		JPanel panel_2 = new JPanel();
+		panel_2 = new JPanel();
 		GroupLayout gl_overviewPanel = new GroupLayout(overviewPanel);
 		gl_overviewPanel.setHorizontalGroup(
 			gl_overviewPanel.createParallelGroup(Alignment.LEADING)
@@ -112,14 +119,19 @@ public class HeatControlApplication extends JFrame{
 					.addContainerGap())
 		);
 		
-		buildingTable = new JTable();
-		panel_2.add(buildingTable);
+		panel_2.setLayout(new CardLayout(0,0));
+		cl = (CardLayout)(panel_2.getLayout());
+		
+		
+		/*buildingTable = new JTable(struct.getHeatingPlan(), struct.getComlunNames());
+		panel_2.add(buildingTable, "name_2297568392586");
 		
 		floorTable = new JTable();
-		panel_2.add(floorTable);
+		panel_2.add(floorTable, "name_2297796567242");
 		
 		roomTable = new JTable();
-		panel_2.add(roomTable);
+		panel_2.add(roomTable, "name_2297869342430");*/
+		
 		overviewPanel.setLayout(gl_overviewPanel);
 		
 		heatingPanel = new JPanel();
@@ -127,7 +139,7 @@ public class HeatControlApplication extends JFrame{
 		
 		heatingInfoLabel = new JLabel("Information about the selected structure");
 		
-		JPanel panel_3 = new JPanel();
+		panel_3 = new JPanel();
 		
 		JPanel panel_4 = new JPanel();
 		GroupLayout gl_heatingPanel = new GroupLayout(heatingPanel);
@@ -152,6 +164,7 @@ public class HeatControlApplication extends JFrame{
 					.addComponent(panel_4, GroupLayout.DEFAULT_SIZE, 80, Short.MAX_VALUE)
 					.addContainerGap())
 		);
+		panel_3.setLayout(new CardLayout(0, 0));
 		
 		int minTemp = 0;
 		int maxTemp = 40;
@@ -204,23 +217,6 @@ public class HeatControlApplication extends JFrame{
 		);
 		panel_4.setLayout(gl_panel_4);
 		
-		heatingTable = new JTable();
-		GroupLayout gl_panel_3 = new GroupLayout(panel_3);
-		gl_panel_3.setHorizontalGroup(
-			gl_panel_3.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_panel_3.createSequentialGroup()
-					.addContainerGap()
-					.addComponent(heatingTable, GroupLayout.PREFERRED_SIZE, 1, GroupLayout.PREFERRED_SIZE)
-					.addContainerGap(446, Short.MAX_VALUE))
-		);
-		gl_panel_3.setVerticalGroup(
-			gl_panel_3.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_panel_3.createSequentialGroup()
-					.addContainerGap()
-					.addComponent(heatingTable, GroupLayout.PREFERRED_SIZE, 1, GroupLayout.PREFERRED_SIZE)
-					.addContainerGap(254, Short.MAX_VALUE))
-		);
-		panel_3.setLayout(gl_panel_3);
 		heatingPanel.setLayout(gl_heatingPanel);
 		GroupLayout gl_panel_1 = new GroupLayout(panel_1);
 		gl_panel_1.setHorizontalGroup(
@@ -285,25 +281,29 @@ public class HeatControlApplication extends JFrame{
 			
 			tabbedPane.setSelectedComponent(overviewPanel);
 			
+			heatingTable = new JTable(struct.getHeatingPlan(), struct.getHeatingPlanColumnNames());
+			panel_3.add(heatingTable, "name_2297869453487");
+			
+			Component[] components = panel_2.getComponents();
+			for(Component c: components){
+				panel_2.remove(c);
+			}
+			
 			//TODO: fill and show the appropriate tables
 			// for overview and heating tab
 			if(struct instanceof Building){
-				floorTable.setEnabled(false);
-				roomTable.setEnabled(false);
-				buildingTable.setEnabled(true);
-				
+				buildingTable = new JTable(struct.getOverviewTableContent() , struct.getOverviewColumnNames());
+				panel_2.add(buildingTable, "name_2297568392586");
 			}
 			if(struct instanceof Floor){
-				roomTable.setEnabled(false);
-				buildingTable.setEnabled(false);
-				floorTable.setEnabled(true);
-				
+				floorTable = new JTable(struct.getOverviewTableContent() , struct.getOverviewColumnNames());
+				panel_2.add(floorTable, "name_2297796567242");
 			}
 			if(struct instanceof Room){
-				floorTable.setEnabled(false);
-				buildingTable.setEnabled(false);
-				roomTable.setEnabled(true);
-				
+				overviewInfoLabel.setText(overviewInfoLabel.getText()+", Temperature: "+((Room) struct).getCurrentTemperature());
+				heatingInfoLabel.setText(heatingInfoLabel.getText()+", Temperature: "+((Room) struct).getCurrentTemperature());
+				roomTable = new JTable(struct.getOverviewTableContent(), struct.getOverviewColumnNames());
+				panel_2.add(roomTable, "name_2297869342430");
 			}
 		}
 	}

@@ -21,4 +21,16 @@ public class Window extends Structure{
 	public void setOpen(boolean isOpen){
 		this.isOpen = isOpen;
 	}
+
+	@Override
+	public String[] getOverviewColumnNames() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Object[][] getOverviewTableContent() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

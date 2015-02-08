@@ -104,7 +104,37 @@ public abstract class Structure {
 		}
 	}
 	
-	public int[][] getHeatingPlan(){
-		return this.heatingPlan;
+	public Object[][] getHeatingPlan(){
+		Object[][] plan = new Object[8][10];
+		
+		for (int i = 0; i<heatingPlan.length; i++){
+			for(int j = 0; j<heatingPlan[i].length; j++){
+				if(heatingPlan[i][j] == -1){
+					plan[j][i+1] = "-";
+				} else {
+					plan[j][i+1] = heatingPlan[i][j];
+				}
+			}
+		}	
+		plan[0][0]="0-3";
+		plan[1][0]="3-6";
+		plan[2][0]="6-9";
+		plan[3][0]="9-12";
+		plan[4][0]="12-15";
+		plan[5][0]="15-18";
+		plan[6][0]="18-21";
+		plan[7][0]="21-24";
+		
+	
+		return plan;
 	}
+	
+	public String[] getHeatingPlanColumnNames(){
+		String[] columnNames = new String[] {"Mo", "Tue", "Wed", "Thur", "Fri", "Sat", "Sun"};
+		return columnNames;
+	}
+	
+	abstract public String[] getOverviewColumnNames();
+	
+	abstract public Object[][] getOverviewTableContent();
 }
