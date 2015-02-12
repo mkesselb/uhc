@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JFrame;
+import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JPanel;
 import javax.swing.JTree;
@@ -29,6 +30,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.tree.TreeSelectionModel;
 
 import java.awt.CardLayout;
@@ -282,7 +284,17 @@ public class HeatControlApplication extends JFrame{
 			tabbedPane.setSelectedComponent(overviewPanel);
 			
 			heatingTable = new JTable(struct.getHeatingPlan(), struct.getHeatingPlanColumnNames());
-			panel_3.add(heatingTable, "name_2297869453487");
+			DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+			centerRenderer.setHorizontalAlignment(JLabel.CENTER);
+			DefaultTableCellRenderer rightRenderer = new DefaultTableCellRenderer();
+			rightRenderer.setHorizontalAlignment(JLabel.RIGHT);
+			heatingTable.getColumnModel().getColumn(0).setCellRenderer(rightRenderer);
+			
+			for(int i = 1; i < struct.getHeatingPlan().length; i++){
+				heatingTable.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
+			}
+			
+			panel_3.add(new JScrollPane(heatingTable), "name_2297869453487");
 			
 			Component[] components = panel_2.getComponents();
 			for(Component c: components){
@@ -293,17 +305,23 @@ public class HeatControlApplication extends JFrame{
 			// for overview and heating tab
 			if(struct instanceof Building){
 				buildingTable = new JTable(struct.getOverviewTableContent() , struct.getOverviewColumnNames());
-				panel_2.add(buildingTable, "name_2297568392586");
+				buildingTable.setColumnSelectionAllowed(false);
+				buildingTable.setRowSelectionAllowed(false);
+				panel_2.add(new JScrollPane(buildingTable), "name_2297568392586");
 			}
 			if(struct instanceof Floor){
 				floorTable = new JTable(struct.getOverviewTableContent() , struct.getOverviewColumnNames());
-				panel_2.add(floorTable, "name_2297796567242");
+				floorTable.setColumnSelectionAllowed(false);
+				floorTable.setRowSelectionAllowed(false);
+				panel_2.add(new JScrollPane(floorTable), "name_2297796567242");
 			}
 			if(struct instanceof Room){
-				overviewInfoLabel.setText(overviewInfoLabel.getText()+", Temperature: "+((Room) struct).getCurrentTemperature());
-				heatingInfoLabel.setText(heatingInfoLabel.getText()+", Temperature: "+((Room) struct).getCurrentTemperature());
+				overviewInfoLabel.setText("<html>" + overviewInfoLabel.getText()+"<br> Temperature: "+((Room) struct).getCurrentTemperature() + "</html>");
+				heatingInfoLabel.setText("<html>" + heatingInfoLabel.getText()+"<br> Temperature: "+((Room) struct).getCurrentTemperature() + "</html>");
 				roomTable = new JTable(struct.getOverviewTableContent(), struct.getOverviewColumnNames());
-				panel_2.add(roomTable, "name_2297869342430");
+				roomTable.setColumnSelectionAllowed(false);
+				roomTable.setRowSelectionAllowed(false);
+				panel_2.add(new JScrollPane(roomTable), "name_2297869342430");
 			}
 		}
 	}

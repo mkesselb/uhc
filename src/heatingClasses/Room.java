@@ -37,7 +37,7 @@ public class Room extends Structure{
 	}
 	
 	public String[] getOverviewColumnNames(){
-		String[] columnNames = new String[] {"window", "status"};
+		String[] columnNames = new String[] {"Window", "Status"};
 		return columnNames;
 	}
 	

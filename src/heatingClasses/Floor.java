@@ -29,7 +29,7 @@ public class Floor extends Structure{
 	}
 	
 	public String[] getOverviewColumnNames(){
-		String[] columnNames = new String[] {"room","temperature", "open windows"};
+		String[] columnNames = new String[] {"Room","Temperature", "Open windows"};
 		return columnNames;
 	}
 	

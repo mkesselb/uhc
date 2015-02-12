@@ -130,7 +130,7 @@ public abstract class Structure {
 	}
 	
 	public String[] getHeatingPlanColumnNames(){
-		String[] columnNames = new String[] {"Mo", "Tue", "Wed", "Thur", "Fri", "Sat", "Sun"};
+		String[] columnNames = new String[] {"Time blocks", "Mo", "Tue", "Wed", "Thur", "Fri", "Sat", "Sun"};
 		return columnNames;
 	}
 	

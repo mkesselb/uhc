@@ -21,7 +21,7 @@ public class Building extends Structure{
 	}
 
 	public String[] getOverviewColumnNames(){
-		String[] columnNames = new String[] {"floor", "window status"};
+		String[] columnNames = new String[] {"Floor", "Open windows"};
 		return columnNames;
 	}
 	
