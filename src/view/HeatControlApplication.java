@@ -57,7 +57,6 @@ public class HeatControlApplication extends JFrame{
 	private JPanel overviewPanel;
 	
 	private JPanel panel_2;
-	private CardLayout cl;
 	private JPanel panel_3;
 
 	private JSlider defaultTempSlider;
@@ -122,17 +121,6 @@ public class HeatControlApplication extends JFrame{
 		);
 		
 		panel_2.setLayout(new CardLayout(0,0));
-		cl = (CardLayout)(panel_2.getLayout());
-		
-		
-		/*buildingTable = new JTable(struct.getHeatingPlan(), struct.getComlunNames());
-		panel_2.add(buildingTable, "name_2297568392586");
-		
-		floorTable = new JTable();
-		panel_2.add(floorTable, "name_2297796567242");
-		
-		roomTable = new JTable();
-		panel_2.add(roomTable, "name_2297869342430");*/
 		
 		overviewPanel.setLayout(gl_overviewPanel);
 		
@@ -283,31 +271,12 @@ public class HeatControlApplication extends JFrame{
 			
 			tabbedPane.setSelectedComponent(overviewPanel);
 			
-			heatingTable = new JTable(struct.getHeatingPlan(), struct.getHeatingPlanColumnNames());
-			DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
-			centerRenderer.setHorizontalAlignment(JLabel.CENTER);
-			DefaultTableCellRenderer rightRenderer = new DefaultTableCellRenderer();
-			rightRenderer.setHorizontalAlignment(JLabel.RIGHT);
-			heatingTable.getColumnModel().getColumn(0).setCellRenderer(rightRenderer);
+			updateHeatingTable(struct);
 			
-			for(int i = 1; i < struct.getHeatingPlan().length; i++){
-				heatingTable.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
-			}
-			
-			Component[] components = panel_3.getComponents();
-			for(Component c: components){
-				panel_3.remove(c);
-			}
-			
-			components = panel_2.getComponents();
+			Component[] components = panel_2.getComponents();
 			for(Component c: components){
 				panel_2.remove(c);
 			}
-			
-			panel_3.add(new JScrollPane(heatingTable), "name_2297869453487");
-			
-			//TODO: fill and show the appropriate tables
-			// for overview and heating tab
 			if(struct instanceof Building){
 				buildingTable = new JTable(struct.getOverviewTableContent() , struct.getOverviewColumnNames());
 				buildingTable.setColumnSelectionAllowed(false);
@@ -349,10 +318,31 @@ public class HeatControlApplication extends JFrame{
 					//	conflicts that shall be overridden)
 				} else{
 					struct.applyDefaultHeatingModel(temp, new ArrayList<String>());
-					//TODO: update heat table from structure models
 				}
+				
+				updateHeatingTable(struct);
 			}
 		}
+	}
+	
+	private void updateHeatingTable(Structure struct){
+		Component[] components = panel_3.getComponents();
+		for(Component c: components){
+			panel_3.remove(c);
+		}
+		
+		heatingTable = new JTable(struct.getHeatingPlan(), struct.getHeatingPlanColumnNames());
+		DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+		centerRenderer.setHorizontalAlignment(JLabel.CENTER);
+		DefaultTableCellRenderer rightRenderer = new DefaultTableCellRenderer();
+		rightRenderer.setHorizontalAlignment(JLabel.RIGHT);
+		heatingTable.getColumnModel().getColumn(0).setCellRenderer(rightRenderer);
+		
+		for(int i = 1; i < struct.getHeatingPlan().length; i++){
+			heatingTable.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
+		}
+		panel_3.add(new JScrollPane(heatingTable), "name_2297869453487");
+		panel_3.updateUI();
 	}
 	
 	private class SuboptimalCheckListener implements ActionListener{
