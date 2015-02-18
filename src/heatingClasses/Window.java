@@ -1,5 +1,7 @@
 package heatingClasses;
 
+import java.util.List;
+
 public class Window extends Structure{
 	
 	private boolean isOpen;
@@ -24,13 +26,16 @@ public class Window extends Structure{
 
 	@Override
 	public String[] getOverviewColumnNames() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public Object[][] getOverviewTableContent() {
-		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	@Override
+	public List<String> getSuboptimalConditions(){
 		return null;
 	}
 }

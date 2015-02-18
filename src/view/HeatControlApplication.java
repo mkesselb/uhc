@@ -5,6 +5,7 @@ import heatingClasses.Floor;
 import heatingClasses.HeatingTreeModel;
 import heatingClasses.Room;
 import heatingClasses.Structure;
+import heatingClasses.Window;
 
 import java.awt.Component;
 import java.awt.EventQueue;
@@ -25,15 +26,19 @@ import javax.swing.JTable;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.JButton;
 import javax.swing.JSlider;
+import javax.swing.ListSelectionModel;
 import javax.swing.WindowConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.tree.TreeSelectionModel;
 
 import java.awt.CardLayout;
+import javax.swing.JTextArea;
 
 public class HeatControlApplication extends JFrame{
 	
@@ -66,6 +71,10 @@ public class HeatControlApplication extends JFrame{
 	private JButton suboptButton;
 
 	private JTabbedPane tabbedPane;
+	private JTextArea suboptTextArea;
+	private JScrollPane scrollPane_1;
+	private JTextArea suboptTextAreaOverview;
+	private JButton suboptButtonOverview;
 	
 	public HeatControlApplication() {
 		
@@ -100,14 +109,21 @@ public class HeatControlApplication extends JFrame{
 		overviewInfoLabel = new JLabel("Information about the selected structure");
 		
 		panel_2 = new JPanel();
+		
+		scrollPane_1 = new JScrollPane();
+		
+		suboptButtonOverview = new JButton("Check for suboptimal heating");
+		suboptButtonOverview.addActionListener(new SuboptimalCheckListener());
 		GroupLayout gl_overviewPanel = new GroupLayout(overviewPanel);
 		gl_overviewPanel.setHorizontalGroup(
 			gl_overviewPanel.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_overviewPanel.createSequentialGroup()
+				.addGroup(Alignment.TRAILING, gl_overviewPanel.createSequentialGroup()
 					.addContainerGap()
-					.addGroup(gl_overviewPanel.createParallelGroup(Alignment.LEADING)
-						.addComponent(panel_2, GroupLayout.DEFAULT_SIZE, 457, Short.MAX_VALUE)
-						.addComponent(overviewInfoLabel))
+					.addGroup(gl_overviewPanel.createParallelGroup(Alignment.TRAILING)
+						.addComponent(scrollPane_1, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 513, Short.MAX_VALUE)
+						.addComponent(panel_2, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 513, Short.MAX_VALUE)
+						.addComponent(overviewInfoLabel, Alignment.LEADING)
+						.addComponent(suboptButtonOverview))
 					.addContainerGap())
 		);
 		gl_overviewPanel.setVerticalGroup(
@@ -116,9 +132,19 @@ public class HeatControlApplication extends JFrame{
 					.addContainerGap()
 					.addComponent(overviewInfoLabel)
 					.addPreferredGap(ComponentPlacement.UNRELATED)
-					.addComponent(panel_2, GroupLayout.DEFAULT_SIZE, 347, Short.MAX_VALUE)
+					.addComponent(panel_2, GroupLayout.PREFERRED_SIZE, 211, GroupLayout.PREFERRED_SIZE)
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(scrollPane_1, GroupLayout.DEFAULT_SIZE, 172, Short.MAX_VALUE)
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(suboptButtonOverview)
 					.addContainerGap())
 		);
+		
+		suboptTextAreaOverview = new JTextArea();
+		suboptTextAreaOverview.setLineWrap(true);
+		suboptTextAreaOverview.setEditable(false);
+		suboptTextAreaOverview.append("Information regarding suboptimal conditions are shown in this window.\n");
+		scrollPane_1.setViewportView(suboptTextAreaOverview);
 		
 		panel_2.setLayout(new CardLayout(0,0));
 		
@@ -176,35 +202,50 @@ public class HeatControlApplication extends JFrame{
 		
 		suboptButton = new JButton("Check for suboptimal heating");
 		suboptButton.addActionListener(new SuboptimalCheckListener());
+		
+		JScrollPane scrollPane = new JScrollPane();
 		GroupLayout gl_panel_4 = new GroupLayout(panel_4);
 		gl_panel_4.setHorizontalGroup(
 			gl_panel_4.createParallelGroup(Alignment.LEADING)
 				.addGroup(gl_panel_4.createSequentialGroup()
 					.addContainerGap()
 					.addGroup(gl_panel_4.createParallelGroup(Alignment.LEADING)
-						.addComponent(defaultTempLabel)
-						.addComponent(defaultTempSlider, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
 						.addGroup(gl_panel_4.createSequentialGroup()
 							.addComponent(defaultTempButton)
-							.addPreferredGap(ComponentPlacement.RELATED, 153, Short.MAX_VALUE)
+							.addPreferredGap(ComponentPlacement.RELATED, 40, Short.MAX_VALUE)
 							.addComponent(suboptButton)
 							.addGap(18)
-							.addComponent(heatingPlanButton)))
+							.addComponent(heatingPlanButton))
+						.addGroup(gl_panel_4.createSequentialGroup()
+							.addGroup(gl_panel_4.createParallelGroup(Alignment.LEADING)
+								.addComponent(defaultTempLabel)
+								.addComponent(defaultTempSlider, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+							.addPreferredGap(ComponentPlacement.RELATED)
+							.addComponent(scrollPane, GroupLayout.DEFAULT_SIZE, 293, Short.MAX_VALUE)))
 					.addContainerGap())
 		);
 		gl_panel_4.setVerticalGroup(
 			gl_panel_4.createParallelGroup(Alignment.LEADING)
 				.addGroup(gl_panel_4.createSequentialGroup()
 					.addContainerGap()
-					.addComponent(defaultTempLabel)
+					.addGroup(gl_panel_4.createParallelGroup(Alignment.LEADING)
+						.addGroup(gl_panel_4.createSequentialGroup()
+							.addComponent(defaultTempLabel)
+							.addPreferredGap(ComponentPlacement.RELATED)
+							.addComponent(defaultTempSlider, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+						.addComponent(scrollPane, GroupLayout.DEFAULT_SIZE, 113, Short.MAX_VALUE))
 					.addPreferredGap(ComponentPlacement.RELATED)
-					.addComponent(defaultTempSlider, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-					.addPreferredGap(ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
 					.addGroup(gl_panel_4.createParallelGroup(Alignment.BASELINE)
 						.addComponent(defaultTempButton)
 						.addComponent(heatingPlanButton)
 						.addComponent(suboptButton)))
 		);
+		
+		suboptTextArea = new JTextArea();
+		suboptTextArea.setLineWrap(true);
+		suboptTextArea.setEditable(false);
+		suboptTextArea.append("Information regarding suboptimal conditions are shown in this window.\n");
+		scrollPane.setViewportView(suboptTextArea);
 		panel_4.setLayout(gl_panel_4);
 		
 		heatingPanel.setLayout(gl_heatingPanel);
@@ -278,13 +319,24 @@ public class HeatControlApplication extends JFrame{
 				panel_2.remove(c);
 			}
 			if(struct instanceof Building){
-				buildingTable = new JTable(struct.getOverviewTableContent() , struct.getOverviewColumnNames());
+				buildingTable = new JTable(struct.getOverviewTableContent() , struct.getOverviewColumnNames()){
+					private static final long serialVersionUID = 1L;
+					public boolean isCellEditable(int row, int column) {                
+		                return false;               
+					};
+				};
 				buildingTable.setColumnSelectionAllowed(false);
 				buildingTable.setRowSelectionAllowed(false);
+				
 				panel_2.add(new JScrollPane(buildingTable), "name_2297568392586");
 			}
 			if(struct instanceof Floor){
-				floorTable = new JTable(struct.getOverviewTableContent() , struct.getOverviewColumnNames());
+				floorTable = new JTable(struct.getOverviewTableContent() , struct.getOverviewColumnNames()){
+					private static final long serialVersionUID = 1L;
+					public boolean isCellEditable(int row, int column) {                
+		                return false;               
+					};
+				};
 				floorTable.setColumnSelectionAllowed(false);
 				floorTable.setRowSelectionAllowed(false);
 				panel_2.add(new JScrollPane(floorTable), "name_2297796567242");
@@ -292,12 +344,31 @@ public class HeatControlApplication extends JFrame{
 			if(struct instanceof Room){
 				overviewInfoLabel.setText("<html>" + overviewInfoLabel.getText()+"<br> Temperature: "+((Room) struct).getCurrentTemperature() + "</html>");
 				heatingInfoLabel.setText("<html>" + heatingInfoLabel.getText()+"<br> Temperature: "+((Room) struct).getCurrentTemperature() + "</html>");
-				roomTable = new JTable(struct.getOverviewTableContent(), struct.getOverviewColumnNames());
-				roomTable.setColumnSelectionAllowed(false);
-				roomTable.setRowSelectionAllowed(false);
-				panel_2.add(new JScrollPane(roomTable), "name_2297869342430");
+				updateRoomTable((Room) struct);
 			}
 		}
+	}
+	
+	private class WindowSelectionListener implements ListSelectionListener {
+	    public void valueChanged(ListSelectionEvent e) {
+	        ListSelectionModel lsm = (ListSelectionModel)e.getSource();
+
+	        if (!lsm.isSelectionEmpty()) {
+	            // Find out which indexes are selected.
+	            int minIndex = lsm.getMinSelectionIndex();
+	            int maxIndex = lsm.getMaxSelectionIndex();
+	            for (int i = minIndex; i <= maxIndex; i++) {
+	                if (lsm.isSelectedIndex(i)) {
+	                	//toggle window on index i
+	                	Structure struct = (Structure) tree.getLastSelectedPathComponent();
+	                	Room r = (Room) struct;
+	                	Window w = (Window) r.getSubStruct(i);
+	                	w.toggleOpen();
+	                	updateRoomTable(r);
+	                }
+	            }
+	        }
+	    }
 	}
 	
 	private class DefaultHeatListener implements ActionListener{
@@ -325,13 +396,41 @@ public class HeatControlApplication extends JFrame{
 		}
 	}
 	
+	private void updateRoomTable(Room room){
+		Component[] components = panel_2.getComponents();
+		for(Component c: components){
+			panel_2.remove(c);
+		}
+		
+		roomTable = new JTable(room.getOverviewTableContent(), room.getOverviewColumnNames()){
+			private static final long serialVersionUID = 1L;
+			public boolean isCellEditable(int row, int column) {                
+                return false;               
+			};
+		};
+		roomTable.setColumnSelectionAllowed(false);
+		roomTable.setRowSelectionAllowed(false);
+
+		ListSelectionModel listSelectionModel = roomTable.getSelectionModel();
+        listSelectionModel.addListSelectionListener(new WindowSelectionListener());
+        roomTable.setSelectionModel(listSelectionModel);
+		
+		panel_2.add(new JScrollPane(roomTable), "name_2297869342430");
+		panel_2.updateUI();
+	}
+	
 	private void updateHeatingTable(Structure struct){
 		Component[] components = panel_3.getComponents();
 		for(Component c: components){
 			panel_3.remove(c);
 		}
 		
-		heatingTable = new JTable(struct.getHeatingPlan(), struct.getHeatingPlanColumnNames());
+		heatingTable = new JTable(struct.getHeatingPlan(), Structure.heatingPlanColumns){
+			private static final long serialVersionUID = 1L;
+			public boolean isCellEditable(int row, int column) {                
+                return false;               
+			};
+		};
 		DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
 		centerRenderer.setHorizontalAlignment(JLabel.CENTER);
 		DefaultTableCellRenderer rightRenderer = new DefaultTableCellRenderer();
@@ -341,6 +440,8 @@ public class HeatControlApplication extends JFrame{
 		for(int i = 1; i < struct.getHeatingPlan().length; i++){
 			heatingTable.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
 		}
+		heatingTable.setColumnSelectionAllowed(false);
+		heatingTable.setRowSelectionAllowed(false);
 		panel_3.add(new JScrollPane(heatingTable), "name_2297869453487");
 		panel_3.updateUI();
 	}
@@ -348,7 +449,23 @@ public class HeatControlApplication extends JFrame{
 	private class SuboptimalCheckListener implements ActionListener{
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			//TODO: check for suboptimal heating
+			//currently selected struct
+			Structure struct = (Structure) tree.getLastSelectedPathComponent();
+			if(struct != null){
+				List<String> subopt = struct.getSuboptimalConditions();
+				String in = struct.getClass().getSimpleName() + "-" + struct.getName() 
+						+ " suboptimal conditions:\n";
+				if(subopt.size() > 0){
+					for(String s : subopt){
+						in += "\t" + s + "\n";
+					}
+				} else{
+					in += "\tNo suboptimal conditions detected!\n";
+				}
+				
+				suboptTextArea.append(in);
+				suboptTextAreaOverview.append(in);
+			}
 		}
 	}
 	

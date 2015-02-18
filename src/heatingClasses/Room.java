@@ -1,5 +1,6 @@
 package heatingClasses;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Room extends Structure{
@@ -7,6 +8,7 @@ public class Room extends Structure{
 	//needs temp-sensor
 	private TemperatureSensor tempSensor;
 	
+	@SuppressWarnings("unchecked")
 	public Room(String name, List<Window> windows){
 		super(name);
 		this.subStructs = (List<Structure>)(List<?>) windows;
@@ -54,5 +56,33 @@ public class Room extends Structure{
 		}
 		
 		return tableContent;
+	}
+
+	@Override
+	public List<String> getSuboptimalConditions() {
+		List<String> subopt = new ArrayList<String>();
+		
+		//1st check open windows
+		for(Structure s : this.subStructs){
+			Window w = (Window) s;
+			if(w.isOpen()){
+				subopt.add(w.getName() + " open");
+			}
+		}
+		
+		//2nd check jumps in programmed heating
+		for(int i = 0; i < heatingPlan.length; i++){
+			for(int j = 0; j < heatingPlan[i].length; j++){
+				if(j < (heatingPlan[i].length - 1) 
+						&& Math.abs(heatingPlan[i][j] - heatingPlan[i][j+1]) > 9){
+					String suboptString = "Jump in Heating: " + Structure.heatingPlanColumns[i] + "," 
+							+ Structure.heatingPlanTimeBlocks[j] + " / " 
+							+ Structure.heatingPlanTimeBlocks[j+1];
+					subopt.add(suboptString);
+				}
+			}
+		}
+		
+		return subopt;
 	}
 }

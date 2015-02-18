@@ -5,6 +5,10 @@ import java.util.List;
 
 public abstract class Structure {
 	
+	public static final String[] heatingPlanColumns = {"Time blocks", "Mo", "Tue", "Wed", "Thur", "Fri", "Sat", "Sun"};
+	
+	public static final String[] heatingPlanTimeBlocks = {"0-3", "3-6", "6-9", "9-12", "12-15", "15-18", "18-21", "21-24"};
+	
 	private String name;
 	
 	protected List<Structure> subStructs;
@@ -115,26 +119,17 @@ public abstract class Structure {
 					plan[j][i+1] = heatingPlan[i][j];
 				}
 			}
-		}	
-		plan[0][0]="0-3";
-		plan[1][0]="3-6";
-		plan[2][0]="6-9";
-		plan[3][0]="9-12";
-		plan[4][0]="12-15";
-		plan[5][0]="15-18";
-		plan[6][0]="18-21";
-		plan[7][0]="21-24";
+		}
+		for(int i = 0; i < plan.length; i++){
+			plan[i][0] = Structure.heatingPlanTimeBlocks[i];
+		}
 		
-	
 		return plan;
-	}
-	
-	public String[] getHeatingPlanColumnNames(){
-		String[] columnNames = new String[] {"Time blocks", "Mo", "Tue", "Wed", "Thur", "Fri", "Sat", "Sun"};
-		return columnNames;
 	}
 	
 	abstract public String[] getOverviewColumnNames();
 	
 	abstract public Object[][] getOverviewTableContent();
+	
+	abstract public List<String> getSuboptimalConditions();
 }

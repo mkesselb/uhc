@@ -1,9 +1,11 @@
 package heatingClasses;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Floor extends Structure{
 	
+	@SuppressWarnings("unchecked")
 	public Floor(String name, List<Room> rooms){
 		super(name);
 		this.subStructs = (List<Structure>)(List<?>) rooms;
@@ -44,5 +46,18 @@ public class Floor extends Structure{
 		
 		return tableContent;
 	}
-	
+
+	@Override
+	public List<String> getSuboptimalConditions() {
+		List<String> suboptRooms= new ArrayList<String>();
+		
+		for(Structure s : this.subStructs){
+			List<String> sub = s.getSuboptimalConditions();
+			if(sub.size() > 0){
+				suboptRooms.add(s.getClass().getSimpleName() + "-" + s.getName());
+			}
+		}
+		
+		return suboptRooms;
+	}
 }
