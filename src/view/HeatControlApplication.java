@@ -294,12 +294,17 @@ public class HeatControlApplication extends JFrame{
 				heatingTable.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
 			}
 			
-			panel_3.add(new JScrollPane(heatingTable), "name_2297869453487");
+			Component[] components = panel_3.getComponents();
+			for(Component c: components){
+				panel_3.remove(c);
+			}
 			
-			Component[] components = panel_2.getComponents();
+			components = panel_2.getComponents();
 			for(Component c: components){
 				panel_2.remove(c);
 			}
+			
+			panel_3.add(new JScrollPane(heatingTable), "name_2297869453487");
 			
 			//TODO: fill and show the appropriate tables
 			// for overview and heating tab
@@ -335,6 +340,7 @@ public class HeatControlApplication extends JFrame{
 				int temp = defaultTempSlider.getValue();
 				
 				List<String> conflicts = struct.getDefaultHeatingConflicts();
+				
 				if(conflicts.size() > 0){
 					//TODO: show conflict popup (maybe should be a JDialog)
 					//something like ...set visible of dialog
