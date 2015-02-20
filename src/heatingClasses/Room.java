@@ -73,7 +73,8 @@ public class Room extends Structure{
 		//2nd check jumps in programmed heating
 		for(int i = 0; i < heatingPlan.length; i++){
 			for(int j = 0; j < heatingPlan[i].length; j++){
-				if(j < (heatingPlan[i].length - 1) 
+				if(heatingPlan[i][j] != -1 
+						&& j < (heatingPlan[i].length - 1) 
 						&& Math.abs(heatingPlan[i][j] - heatingPlan[i][j+1]) > 9){
 					String suboptString = "Jump in Heating: " + Structure.heatingPlanColumns[i+1] + "," 
 							+ Structure.heatingPlanTimeBlocks[j] + " / " 

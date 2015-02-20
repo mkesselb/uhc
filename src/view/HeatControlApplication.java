@@ -8,11 +8,9 @@ import heatingClasses.Structure;
 import heatingClasses.Window;
 
 import java.awt.Component;
-import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JFrame;
@@ -395,7 +393,7 @@ public class HeatControlApplication extends JFrame{
 						struct.applyDefaultHeatingModel(temp, rConflicts);
 					}
 				} else{
-					struct.applyDefaultHeatingModel(temp, new ArrayList<String>());
+					struct.applyDefaultHeatingModel(temp, conflicts);
 				}
 				
 				updateHeatingTable(struct);
@@ -479,7 +477,37 @@ public class HeatControlApplication extends JFrame{
 	private class ProgramHeatingPlanListener implements ActionListener{
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			//TODO: program heating popup
+			//currently selected struct
+			Structure struct = (Structure) tree.getLastSelectedPathComponent();
+			if(struct != null){
+				HeatControlPopup hcp = new HeatControlPopup();
+				hcp.setTitle("Program Heating");
+				hcp.setBounds(120, 140, 500, 260);
+				hcp.setModal(true);
+				hcp.setVisible(true);
+				
+				List<Integer> programHeating = hcp.getResults();
+				if(programHeating  != null){
+					List<String> conflicts = struct.getHeatingConflicts(programHeating.get(0), programHeating.get(1), programHeating.get(2), programHeating.get(3));
+				
+					if(conflicts.size() > 0){
+						HeatControlConflict hcc = new HeatControlConflict(conflicts);
+						hcc.setTitle("Heating Conflicts");
+						hcc.setBounds(120, 140, 600, 480);
+						hcc.setModal(true);
+						hcc.setVisible(true);
+						List<String> rConflicts = hcc.getResult();
+						
+						if(rConflicts != null){
+							struct.applyHeatingModel(programHeating.get(0), programHeating.get(1), programHeating.get(2), programHeating.get(3), rConflicts);
+						}
+					} else{
+						struct.applyHeatingModel(programHeating.get(0), programHeating.get(1), programHeating.get(2), programHeating.get(3), conflicts);
+					}	
+				}
+				
+				updateHeatingTable(struct);
+			}
 		}
 	}
 	

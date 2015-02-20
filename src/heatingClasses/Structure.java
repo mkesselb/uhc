@@ -63,7 +63,7 @@ public abstract class Structure {
 		List<String> conflicts = new ArrayList<String>();
 		
 		for(int i = 0; i < heatingPlan.length; i++){
-			conflicts.addAll(getHeatingConflicts(i, 0, 8, temp));
+			conflicts.addAll(getHeatingConflicts(i, 0, 7, temp));
 		}
 		
 		return conflicts;
@@ -75,7 +75,7 @@ public abstract class Structure {
 	public List<String> getHeatingConflicts(int dayIndex, int fromCell, int toCell, int temp){
 		List<String> conflicts = new ArrayList<String>();
 		
-		for(int j = fromCell; j < toCell; j++){
+		for(int j = fromCell; j <= toCell; j++){
 			if(heatingPlan[dayIndex][j] != -1 && heatingPlan[dayIndex][j] != temp){
 				conflicts.add(dayIndex + "," + j + "," + this.getClass().getSimpleName() + "-" + this.toString() + "," + heatingPlan[dayIndex][j]);
 			}
@@ -92,7 +92,7 @@ public abstract class Structure {
 	
 	public void applyDefaultHeatingModel(int temp, List<String> conflictOverride){
 		for(int i = 0; i < heatingPlan.length; i++){
-			applyHeatingModel(i, 0, 8, temp, conflictOverride);
+			applyHeatingModel(i, 0, 7, temp, conflictOverride);
 		}
 	}
 	
@@ -102,7 +102,7 @@ public abstract class Structure {
 			int temp, List<String> conflictOverride){
 		Conflicts c = new Conflicts(this.toString(), conflictOverride);
 		
-		for(int j = fromCell; j < toCell; j++){
+		for(int j = fromCell; j <= toCell; j++){
 			if(heatingPlan[dayIndex][j] == -1){
 				heatingPlan[dayIndex][j] = temp;
 			} else{
