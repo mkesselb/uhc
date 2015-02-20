@@ -59,11 +59,11 @@ public abstract class Structure {
 		return this.name;
 	}
 	
-	public List<String> getDefaultHeatingConflicts(){
+	public List<String> getDefaultHeatingConflicts(int temp){
 		List<String> conflicts = new ArrayList<String>();
 		
 		for(int i = 0; i < heatingPlan.length; i++){
-			conflicts.addAll(getHeatingConflicts(i, 0, 8));
+			conflicts.addAll(getHeatingConflicts(i, 0, 8, temp));
 		}
 		
 		return conflicts;
@@ -72,12 +72,18 @@ public abstract class Structure {
 	//this methods returns the conflicts that are present.
 	//after calling this method, the user has to decide which of the conflicts shall be
 	//overridden and which not
-	public List<String> getHeatingConflicts(int dayIndex, int fromCell, int toCell){
+	public List<String> getHeatingConflicts(int dayIndex, int fromCell, int toCell, int temp){
 		List<String> conflicts = new ArrayList<String>();
 		
 		for(int j = fromCell; j < toCell; j++){
-			if(heatingPlan[dayIndex][j] != -1){
-				conflicts.add(dayIndex + "," + j + "," + this.toString() + "," + heatingPlan[dayIndex][j]);
+			if(heatingPlan[dayIndex][j] != -1 && heatingPlan[dayIndex][j] != temp){
+				conflicts.add(dayIndex + "," + j + "," + this.getClass().getSimpleName() + "-" + this.toString() + "," + heatingPlan[dayIndex][j]);
+			}
+		}
+		
+		for(Structure s : this.subStructs){
+			if(!(s instanceof Window)){
+				conflicts.addAll(s.getHeatingConflicts(dayIndex, fromCell, toCell, temp));
 			}
 		}
 		
@@ -101,9 +107,16 @@ public abstract class Structure {
 				heatingPlan[dayIndex][j] = temp;
 			} else{
 				//check if conflict shall be overridden or not
-				if(c.checkOverride(dayIndex, j)){
+				if(c.checkOverride(dayIndex, j, this.getClass().getSimpleName() + "-" + this.toString())){
 					heatingPlan[dayIndex][j] = temp;
 				}
+			}
+		}
+		
+		//also apply heating model on sub-structs
+		for(Structure s : this.subStructs){
+			if(!(s instanceof Window)){
+				s.applyHeatingModel(dayIndex, fromCell, toCell, temp, conflictOverride);
 			}
 		}
 	}

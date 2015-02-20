@@ -8,6 +8,7 @@ import heatingClasses.Structure;
 import heatingClasses.Window;
 
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -38,6 +39,7 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.tree.TreeSelectionModel;
 
 import java.awt.CardLayout;
+
 import javax.swing.JTextArea;
 
 public class HeatControlApplication extends JFrame{
@@ -379,14 +381,19 @@ public class HeatControlApplication extends JFrame{
 			if(struct != null){
 				int temp = defaultTempSlider.getValue();
 				
-				List<String> conflicts = struct.getDefaultHeatingConflicts();
+				List<String> conflicts = struct.getDefaultHeatingConflicts(temp);
 				
 				if(conflicts.size() > 0){
-					//TODO: show conflict popup (maybe should be a JDialog)
-					//something like ...set visible of dialog
-					// -- in the dialog, the list shall be shown, and
-					//then after that: dialog.getConflicts -> (needs this method to retrieve the 
-					//	conflicts that shall be overridden)
+					HeatControlConflict hcc = new HeatControlConflict(conflicts);
+					hcc.setTitle("Heating Conflicts");
+					hcc.setBounds(120, 140, 600, 480);
+					hcc.setModal(true);
+					hcc.setVisible(true);
+					List<String> rConflicts = hcc.getResult();
+					
+					if(rConflicts != null){
+						struct.applyDefaultHeatingModel(temp, rConflicts);
+					}
 				} else{
 					struct.applyDefaultHeatingModel(temp, new ArrayList<String>());
 				}

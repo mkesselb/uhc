@@ -1,5 +1,6 @@
 package heatingClasses;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Window extends Structure{
@@ -9,6 +10,7 @@ public class Window extends Structure{
 	public Window(String name, boolean isOpen){
 		super(name);
 		this.isOpen = isOpen;
+		this.subStructs = new ArrayList<Structure>();
 	}
 	
 	public boolean toggleOpen(){
