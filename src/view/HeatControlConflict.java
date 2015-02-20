@@ -34,9 +34,9 @@ public class HeatControlConflict extends JDialog{
 	private JScrollPane scrollPane;
 	private JPanel conflictPanel;
 
-	public HeatControlConflict(List<String> conflicts) {
+	public HeatControlConflict(List<String> conflicts, int newTemp) {
 		
-		JLabel conflictLabel = new JLabel("<html>The following conflicts where found.<br>Toggle those that shall be overwritten on confirmation.</html>");
+		JLabel conflictLabel = new JLabel("<html>The following conflicts where found.<br>Toggle those that shall be overwritten on confirmation.<br>New temperature: " + newTemp + "</html>");
 		
 		JButton confirmButton = new JButton("confirm selection");
 		confirmButton.addActionListener(new ConfirmListener());

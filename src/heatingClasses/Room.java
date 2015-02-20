@@ -75,6 +75,7 @@ public class Room extends Structure{
 			for(int j = 0; j < heatingPlan[i].length; j++){
 				if(heatingPlan[i][j] != -1 
 						&& j < (heatingPlan[i].length - 1) 
+						&& heatingPlan[i][j+1] != -1
 						&& Math.abs(heatingPlan[i][j] - heatingPlan[i][j+1]) > 9){
 					String suboptString = "Jump in Heating: " + Structure.heatingPlanColumns[i+1] + "," 
 							+ Structure.heatingPlanTimeBlocks[j] + " / " 

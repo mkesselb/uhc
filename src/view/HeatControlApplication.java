@@ -382,7 +382,7 @@ public class HeatControlApplication extends JFrame{
 				List<String> conflicts = struct.getDefaultHeatingConflicts(temp);
 				
 				if(conflicts.size() > 0){
-					HeatControlConflict hcc = new HeatControlConflict(conflicts);
+					HeatControlConflict hcc = new HeatControlConflict(conflicts, temp);
 					hcc.setTitle("Heating Conflicts");
 					hcc.setBounds(120, 140, 600, 480);
 					hcc.setModal(true);
@@ -491,7 +491,7 @@ public class HeatControlApplication extends JFrame{
 					List<String> conflicts = struct.getHeatingConflicts(programHeating.get(0), programHeating.get(1), programHeating.get(2), programHeating.get(3));
 				
 					if(conflicts.size() > 0){
-						HeatControlConflict hcc = new HeatControlConflict(conflicts);
+						HeatControlConflict hcc = new HeatControlConflict(conflicts, programHeating.get(3));
 						hcc.setTitle("Heating Conflicts");
 						hcc.setBounds(120, 140, 600, 480);
 						hcc.setModal(true);
